@@ -41,7 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthorsORM.cs" />
+    <Compile Include="BooksORM.cs" />
     <Compile Include="CategoriesORM.cs" />
+    <Compile Include="GenreORM.cs" />
+    <Compile Include="LoanBookORM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

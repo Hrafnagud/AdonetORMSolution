@@ -17,7 +17,7 @@ namespace AdonetORMCommon
             {
                 if (_mySqlDBConnection == null)
                 {
-                    _mySqlDBConnection = new SqlConnection("Server=DESKTOP-TUMHS1A; Database=NORTHWND; Trusted_Connection=True;");
+                    _mySqlDBConnection = new SqlConnection("Server=DESKTOP-TUMHS1A; Database=SCHOOLLIBRARY; Trusted_Connection=True;");
                 }
                 return _mySqlDBConnection;
             }
@@ -38,10 +38,10 @@ namespace AdonetORMCommon
 
                 foreach (PropertyInfo propertyitem in propertyInfos)
                 {
-                    object o = rowitem[propertyitem.Name];
-                    if (o != null)
+                    object theObject = rowitem[propertyitem.Name];
+                    if (theObject != null && theObject.ToString().Length > 0)
                     {
-                        propertyitem.SetValue(myET, o);
+                        propertyitem.SetValue(myET, theObject);
                     }
                 }
 
@@ -51,6 +51,27 @@ namespace AdonetORMCommon
 
 
             return list;
+        }
+
+        public static ET ToET<ET>(this DataTable dataTable) where ET : class, new()
+        {
+            Type theType = typeof(ET);
+            ET entity = new ET();
+            PropertyInfo[] propertyInfos = theType.GetProperties();
+
+            foreach (DataRow rowItem in dataTable.Rows)
+            {
+                foreach (var propertyItem in propertyInfos)
+                {
+                    object theObject = rowItem[propertyItem.Name];
+                    if (theObject != null && theObject.ToString().Length > 0)
+                    {
+                        propertyItem.SetValue(entity, theObject);
+                    }
+                }
+            }
+
+            return entity;
         }
     }
 }

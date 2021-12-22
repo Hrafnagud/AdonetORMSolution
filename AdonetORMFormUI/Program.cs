@@ -16,7 +16,7 @@ namespace AdonetORMFormUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormCategories());
+            Application.Run(new FormBooks());
         }
     }
 }
