@@ -144,6 +144,7 @@ namespace AdonetORMFormUI
             this.comboRemoveBook.Name = "comboRemoveBook";
             this.comboRemoveBook.Size = new System.Drawing.Size(667, 24);
             this.comboRemoveBook.TabIndex = 1;
+            this.comboRemoveBook.SelectedIndexChanged += new System.EventHandler(this.comboRemoveBook_SelectedIndexChanged);
             // 
             // comboUpdateGenre
             // 
@@ -191,7 +192,7 @@ namespace AdonetORMFormUI
             this.tabPage4.Location = new System.Drawing.Point(4, 25);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(1079, 561);
+            this.tabPage4.Size = new System.Drawing.Size(1203, 539);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Delete";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -284,6 +285,7 @@ namespace AdonetORMFormUI
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(1211, 568);
             this.tabControl1.TabIndex = 1;
+            this.tabControl1.Click += new System.EventHandler(this.tabControl1_Click);
             // 
             // tabPage1
             // 
@@ -314,7 +316,7 @@ namespace AdonetORMFormUI
             this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage2.Size = new System.Drawing.Size(1079, 561);
+            this.tabPage2.Size = new System.Drawing.Size(1203, 539);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Add";
             this.tabPage2.UseVisualStyleBackColor = true;

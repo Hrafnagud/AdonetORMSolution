@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 namespace AdonetORMEntities
 {
     public static class DefaultControls
-    {
-        public static int DefaultValue { get; set; } = -1;  //Constants
+    {       //Constant
+        public static int DefaultIndex { get; set; } = -1;  //Constants
+        public static int DefaultValue { get; set; } = 0;
+        public static string DefaultGenre { get; set; } = "No Genre";
     }
 }

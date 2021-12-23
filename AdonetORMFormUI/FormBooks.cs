@@ -129,14 +129,23 @@ namespace AdonetORMFormUI
                 if (booksORM.Insert(newBook))
                 {
                     MessageBox.Show($"New book '{newBook.BookName}' has been added successfully");
-                    //BringAllBooksToGridWithViewModal();
-                    //Cleaning
+                    BringAllBooksToGridWithViewModal();
+                    AddPageCleanControls();
                 }
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+
+        private void AddPageCleanControls()
+        {
+            textAddBookName.Clear();
+            comboAddAuthor.SelectedIndex = DefaultControls.DefaultIndex;
+            comboAddGenre.SelectedIndex = DefaultControls.DefaultIndex;
+            numericUpDownAddPages.Value = DefaultControls.DefaultValue;
+            numericUpDownAddStock.Value = DefaultControls.DefaultValue;
         }
 
         private void btnDeleteBook_Click(object sender, EventArgs e)
@@ -227,7 +236,7 @@ namespace AdonetORMFormUI
                     {
                         //comboUpdateGenre.SelectedIndex = -1;
                         //This statement is alternative but to make it more professional we can use following approach
-                        comboUpdateGenre.SelectedValue = DefaultControls.DefaultValue;
+                        comboUpdateGenre.SelectedValue = DefaultControls.DefaultIndex;
 
                     }
                     else
@@ -299,6 +308,34 @@ namespace AdonetORMFormUI
             {
                 MessageBox.Show("ERROR " + ex.Message);
             }
+        }
+
+        private void comboRemoveBook_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //Filling rich text box in delete tab.
+            if (comboRemoveBook.SelectedIndex >= 0)
+            {
+                Book chosenBook = booksORM.SelectET((int)comboRemoveBook.SelectedValue);
+
+                if (chosenBook != null)
+                {
+                    //string genre = chosenBook.GenreId == null ? "No Genre" : genreORM.Select().FirstOrDefault(x => x.GenreId == chosenBook.GenreId).GenreName;    and pass genre inside $"Genre{} <= here. That's it!
+                    richTextBoxBook.Text =  $"Book: {chosenBook.BookName}\n" +
+                                            $"Genre: {(chosenBook.GenreId == null ? "No Genre" : genreORM.Select().FirstOrDefault(x => x.GenreId == chosenBook.GenreId).GenreName)}\n" +
+                                            $"Author: {authorsORM.Select().FirstOrDefault(x => x.AuthorId == chosenBook.AuthorId).AuthorId}\n" +
+                                            $"Pages: {chosenBook.Pages}\n" +
+                                            $"Stock: {chosenBook.Stock}";
+                }
+            }
+        }
+
+        private void tabControl1_Click(object sender, EventArgs e)
+        {
+            //When tabs are changed, controls will be cleaned.
+            AddPageCleanControls();
+            comboBoxBookUpdate.SelectedIndex = DefaultControls.DefaultIndex;
+            UpdatePageCleanControls();
+            DeletePageCleanControls();
         }
     }
 }
