@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using AdonetORM_BLL;
 using AdonetORMEntities;
 using AdonetORMEntities.Entities;
+using AdonetORMEntities.ViewModals;
 
 namespace AdonetORMFormUI
 {
@@ -131,6 +132,10 @@ namespace AdonetORMFormUI
                     MessageBox.Show($"New book '{newBook.BookName}' has been added successfully");
                     BringAllBooksToGridWithViewModal();
                     AddPageCleanControls();
+                    //All book should be brought to comboboxupdate and delete.
+                    BringAllBooksToComboUpdate();
+                    BringAllBooksToComboDelete();
+
                 }
             }
             catch (Exception ex)
@@ -190,6 +195,8 @@ namespace AdonetORMFormUI
                         MessageBox.Show($"Book '{myBook.BookName}' has been successfully deleteted.");
                         DeletePageCleanControls();
                         BringAllBooksToComboDelete();
+                        BringAllBooksToComboUpdate();
+                        BringAllBooksToGridWithViewModal();
                        
                     }
                     else
@@ -298,6 +305,8 @@ namespace AdonetORMFormUI
                     case true:
                         MessageBox.Show($"Book {chosenBook.BookName} has been successfully updated");
                         BringAllBooksToComboUpdate();
+                        BringAllBooksToGridWithViewModal();
+                        BringAllBooksToComboDelete();
                         break;
 
                     case false:
@@ -313,20 +322,41 @@ namespace AdonetORMFormUI
         private void comboRemoveBook_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Filling rich text box in delete tab.
+
+            #region FirstApproach
             if (comboRemoveBook.SelectedIndex >= 0)
             {
+                //First Approach
                 Book chosenBook = booksORM.SelectET((int)comboRemoveBook.SelectedValue);
 
                 if (chosenBook != null)
                 {
                     //string genre = chosenBook.GenreId == null ? "No Genre" : genreORM.Select().FirstOrDefault(x => x.GenreId == chosenBook.GenreId).GenreName;    and pass genre inside $"Genre{} <= here. That's it!
-                    richTextBoxBook.Text =  $"Book: {chosenBook.BookName}\n" +
+                    richTextBoxBook.Text = $"Book: {chosenBook.BookName}\n" +
                                             $"Genre: {(chosenBook.GenreId == null ? "No Genre" : genreORM.Select().FirstOrDefault(x => x.GenreId == chosenBook.GenreId).GenreName)}\n" +
-                                            $"Author: {authorsORM.Select().FirstOrDefault(x => x.AuthorId == chosenBook.AuthorId).AuthorId}\n" +
+                                            $"Author: {authorsORM.Select().FirstOrDefault(x => x.AuthorId == chosenBook.AuthorId).AuthorFullName}\n" +
                                             $"Pages: {chosenBook.Pages}\n" +
                                             $"Stock: {chosenBook.Stock}";
                 }
+
             }
+            #endregion FirstApproach
+
+            #region SecondApproach
+            //if (comboRemoveBook.SelectedIndex >= 0)
+            //{
+            //    BookViewModal chosenBook = booksORM.BringBooksWithViewModal().FirstOrDefault(x => x.BookId == (int)comboRemoveBook.SelectedValue);
+            //    if (chosenBook != null)
+            //    {
+            //        richTextBoxBook.Clear();
+            //        richTextBoxBook.Text =  $"Book: {chosenBook.BookName}\n" +
+            //                                $"Genre: {chosenBook.GenreName}\n" +
+            //                                $"Author: {chosenBook.AuthorFullName}\n" +
+            //                                $"Pages: {chosenBook.Pages}\n" +
+            //                                $"Stock: {chosenBook.Stock}";
+            //    }
+            //}
+            #endregion SecondApproach
         }
 
         private void tabControl1_Click(object sender, EventArgs e)
@@ -336,6 +366,7 @@ namespace AdonetORMFormUI
             comboBoxBookUpdate.SelectedIndex = DefaultControls.DefaultIndex;
             UpdatePageCleanControls();
             DeletePageCleanControls();
+
         }
     }
 }
