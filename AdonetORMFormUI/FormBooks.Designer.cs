@@ -41,6 +41,7 @@ namespace AdonetORMFormUI
             this.textUpdateBookName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.btnDeleteBook = new System.Windows.Forms.Button();
             this.richTextBoxBook = new System.Windows.Forms.RichTextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -62,7 +63,7 @@ namespace AdonetORMFormUI
             this.label7 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
-            this.btnDeleteBook = new System.Windows.Forms.Button();
+            this.btnUpdateBook = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownUpdateStoc)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPagesUpdate)).BeginInit();
             this.tabPage4.SuspendLayout();
@@ -84,6 +85,7 @@ namespace AdonetORMFormUI
             this.comboBoxBookUpdate.Name = "comboBoxBookUpdate";
             this.comboBoxBookUpdate.Size = new System.Drawing.Size(912, 24);
             this.comboBoxBookUpdate.TabIndex = 0;
+            this.comboBoxBookUpdate.SelectedIndexChanged += new System.EventHandler(this.comboBoxBookUpdate_SelectedIndexChanged);
             // 
             // numericUpDownUpdateStoc
             // 
@@ -194,6 +196,16 @@ namespace AdonetORMFormUI
             this.tabPage4.Text = "Delete";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
+            // btnDeleteBook
+            // 
+            this.btnDeleteBook.Location = new System.Drawing.Point(156, 472);
+            this.btnDeleteBook.Name = "btnDeleteBook";
+            this.btnDeleteBook.Size = new System.Drawing.Size(667, 52);
+            this.btnDeleteBook.TabIndex = 3;
+            this.btnDeleteBook.Text = "Delete Book";
+            this.btnDeleteBook.UseVisualStyleBackColor = true;
+            this.btnDeleteBook.Click += new System.EventHandler(this.btnDeleteBook_Click);
+            // 
             // richTextBoxBook
             // 
             this.richTextBoxBook.Location = new System.Drawing.Point(156, 162);
@@ -224,6 +236,7 @@ namespace AdonetORMFormUI
             // 
             // groupBoxBookUpdate
             // 
+            this.groupBoxBookUpdate.Controls.Add(this.btnUpdateBook);
             this.groupBoxBookUpdate.Controls.Add(this.numericUpDownUpdateStoc);
             this.groupBoxBookUpdate.Controls.Add(this.numericUpDownPagesUpdate);
             this.groupBoxBookUpdate.Controls.Add(this.label6);
@@ -255,7 +268,7 @@ namespace AdonetORMFormUI
             this.dataGridViewBooks.ReadOnly = true;
             this.dataGridViewBooks.RowHeadersWidth = 51;
             this.dataGridViewBooks.RowTemplate.Height = 24;
-            this.dataGridViewBooks.Size = new System.Drawing.Size(970, 512);
+            this.dataGridViewBooks.Size = new System.Drawing.Size(1429, 688);
             this.dataGridViewBooks.TabIndex = 0;
             // 
             // tabControl1
@@ -269,7 +282,7 @@ namespace AdonetORMFormUI
             this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1087, 590);
+            this.tabControl1.Size = new System.Drawing.Size(1211, 568);
             this.tabControl1.TabIndex = 1;
             // 
             // tabPage1
@@ -279,7 +292,7 @@ namespace AdonetORMFormUI
             this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Size = new System.Drawing.Size(1079, 561);
+            this.tabPage1.Size = new System.Drawing.Size(1203, 539);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "ShowList";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -428,21 +441,21 @@ namespace AdonetORMFormUI
             this.label1.TabIndex = 0;
             this.label1.Text = "Choose The Book You Want to Update";
             // 
-            // btnDeleteBook
+            // btnUpdateBook
             // 
-            this.btnDeleteBook.Location = new System.Drawing.Point(156, 472);
-            this.btnDeleteBook.Name = "btnDeleteBook";
-            this.btnDeleteBook.Size = new System.Drawing.Size(667, 52);
-            this.btnDeleteBook.TabIndex = 3;
-            this.btnDeleteBook.Text = "Delete Book";
-            this.btnDeleteBook.UseVisualStyleBackColor = true;
-            this.btnDeleteBook.Click += new System.EventHandler(this.btnDeleteBook_Click);
+            this.btnUpdateBook.Location = new System.Drawing.Point(11, 306);
+            this.btnUpdateBook.Name = "btnUpdateBook";
+            this.btnUpdateBook.Size = new System.Drawing.Size(901, 62);
+            this.btnUpdateBook.TabIndex = 2;
+            this.btnUpdateBook.Text = "UPDATE";
+            this.btnUpdateBook.UseVisualStyleBackColor = true;
+            this.btnUpdateBook.Click += new System.EventHandler(this.btnUpdateBook_Click);
             // 
             // FormBooks
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1087, 590);
+            this.ClientSize = new System.Drawing.Size(1211, 568);
             this.Controls.Add(this.tabControl1);
             this.Name = "FormBooks";
             this.Text = "BOOK OPERATIONS";
@@ -502,5 +515,6 @@ namespace AdonetORMFormUI
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnDeleteBook;
+        private System.Windows.Forms.Button btnUpdateBook;
     }
 }

@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultControls.cs" />
     <Compile Include="Entities\Author.cs" />
     <Compile Include="Entities\Book.cs" />
     <Compile Include="Entities\Category.cs" />

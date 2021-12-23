@@ -37,9 +37,9 @@ namespace AdonetORM_BLL
                         AuthorId = item.AuthorId
                     };
 
-                    book.AuthorFullName = authors.Find(x => x.AuthorId == book.AuthorId)?.AuthorFullName;
-                    book.GenreId = genre.Find(x => x.GenreId == book.GenreId)?.GenreId;
-                    book.GenreName = genre.Find(x => x.GenreId == book.GenreId)?.GenreName;
+                    book.AuthorFullName = authors.Find(x => x.AuthorId == item.AuthorId)?.AuthorFullName;
+                    book.GenreId = genre.Find(x => x.GenreId == item.GenreId)?.GenreId;
+                    book.GenreName = genre.Find(x => x.GenreId == item.GenreId)?.GenreName;
                     returnList.Add(book);
                 }
 

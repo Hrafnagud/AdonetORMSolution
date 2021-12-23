@@ -73,7 +73,7 @@ namespace AdonetORMCommon
             using (Tools.MySqlDBConnection)
             {
                 SqlCommand command = new SqlCommand(query, Tools.MySqlDBConnection);
-                Tools.MySqlDBConnection.Open();
+                Tools.OpenConnection();
                 affectedRows = command.ExecuteNonQuery();
             }
 
@@ -87,8 +87,6 @@ namespace AdonetORMCommon
 
                 return false;
             }
-
-            return true;
         }
 
         public bool Insert(ET Entity)
@@ -157,7 +155,7 @@ namespace AdonetORMCommon
             command.CommandType = CommandType.Text;
             command.CommandText = query;
             command.Connection = Tools.MySqlDBConnection;
-            Tools.MySqlDBConnection.Open();
+            Tools.OpenConnection();
             int affectedRows = command.ExecuteNonQuery();
             Tools.MySqlDBConnection.Close();
 
@@ -182,6 +180,7 @@ namespace AdonetORMCommon
                 querySentence += table.TableName;
             }
             SqlCommand command = new SqlCommand(querySentence, Tools.MySqlDBConnection);
+            Tools.OpenConnection();
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             DataTable dataTable = new DataTable();
             adapter.Fill(dataTable);
@@ -191,7 +190,77 @@ namespace AdonetORMCommon
 
         public bool Update(ET Entity)
         {
-            throw new NotImplementedException();
+            string query = "";
+            string sets = "";
+            PropertyInfo[] propertyArray = ETType.GetProperties();
+            foreach (var item in propertyArray)
+            {
+                if (item.Name == TheTable.IdentityColumn)
+                {
+                    continue;
+                }
+
+                if (item.GetValue(Entity) == null)
+                {
+                    sets += item.Name +"= null,";
+                }
+
+                else if (item.PropertyType.Name.Contains("DateTime"))
+                {
+                    DateTime date;
+                    DateTime.TryParse(item.GetValue(Entity).ToString(), out date);
+                    string dateString = $"'{date.ToString("yyyy-MM-dd HH:mm:ss")}'";
+                    //LoanEnds = '2021-12-23 09:29:23',
+                    sets += item.Name + "=" + dateString + ",";
+                }
+                else if (item.PropertyType.Name.Contains("Bool"))
+                {
+                    bool result = (bool)item.GetValue(Entity);
+                    string resultString = result ? "1" : "0";
+                    //IsPassive = 0,
+                    sets += $"{item.Name} = {resultString},";
+                }
+                else if (item.PropertyType.Name.Contains("String") || item.PropertyType.Name.Contains("Char"))
+                {
+                    //BookName = 'Crime and Punishment',
+                    sets += $"{item.Name} = '{item.GetValue(Entity)}',"; 
+                }
+                else
+                {
+                    //Pages = 200,
+                    sets += $"{item.Name} = {item.GetValue(Entity)},";
+                }
+
+            }
+            sets = sets.TrimEnd(',');
+            query = $"update {TheTable.TableName} set {sets} ";
+            foreach (var item in propertyArray)
+            {
+                if (item.Name == TheTable.PrimaryColumn)
+                {
+                    if (item.PropertyType.Name.Contains("String") || item.PropertyType.Name.Contains("Char"))
+                    {
+                        //where CategoryID = 'ALFKI'    this condition added because primary key doesn't necessarily be of type integer.
+                        query += $"where {item.Name} = '{item.GetValue(Entity)}'";
+                    }
+                    else
+                    {
+                        //where BookId = 2
+                        query += $"where {item.Name} = {item.GetValue(Entity)}";
+                    }
+                    break;
+                }
+            }
+
+            int affectedRows = 0;
+            using (Tools.MySqlDBConnection)
+            {
+                SqlCommand command = new SqlCommand(query, Tools.MySqlDBConnection);
+                Tools.OpenConnection();
+                affectedRows = command.ExecuteNonQuery();
+            }
+
+            return affectedRows > 0 ? true : false;
         }
 
         public ET SelectET(int etID)
@@ -209,7 +278,7 @@ namespace AdonetORMCommon
             using (Tools.MySqlDBConnection)
             {
                 SqlCommand commadn = new SqlCommand(query, Tools.MySqlDBConnection);
-                Tools.MySqlDBConnection.Open();
+                Tools.OpenConnection();
                 SqlDataAdapter adapter = new SqlDataAdapter(commadn);
                 adapter.Fill(dataTable);
             }

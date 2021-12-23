@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AdonetORM_BLL;
+using AdonetORMEntities;
 using AdonetORMEntities.Entities;
 
 namespace AdonetORMFormUI
@@ -28,9 +29,17 @@ namespace AdonetORMFormUI
         {
             BringAllAuthorsToCombo();
             BringAllGenreToCombo();
-            //BringAllBooksToGridWithViewModal();
+            BringAllBooksToGridWithViewModal();
             BringAllBooksToComboDelete();
+            BringAllBooksToComboUpdate();
 
+        }
+
+        private void BringAllBooksToComboUpdate()
+        {
+            comboBoxBookUpdate.DisplayMember = "BookName";
+            comboBoxBookUpdate.ValueMember = "BookId";
+            comboBoxBookUpdate.DataSource = booksORM.Select();
         }
 
         private void BringAllBooksToComboDelete()
@@ -59,15 +68,20 @@ namespace AdonetORMFormUI
             comboAddGenre.ValueMember = "GenreId";
             comboAddGenre.DataSource = genreORM.BringGenre();
             comboAddGenre.SelectedIndex = 0;
+
+            comboUpdateGenre.DisplayMember = "GenreName";
+            comboUpdateGenre.ValueMember = "GenreId";
+            comboUpdateGenre.DataSource = genreORM.BringGenre();
         }
 
         private void BringAllAuthorsToCombo()
         {
             comboAddAuthor.DisplayMember = "AuthorFullName";
             comboAddAuthor.ValueMember = "AuthorId";
-
-            var l= authorsORM.BringAuthorsAsListFullNameTrim();
             comboAddAuthor.DataSource = authorsORM.BringAuthorsAsListFullNameTrim();
+            comboUpdateAuthor.DisplayMember = "AuthorFullName";
+            comboUpdateAuthor.ValueMember = "AuthorId";
+            comboUpdateAuthor.DataSource = authorsORM.BringAuthorsAsListFullNameTrim();
 
         }
 
@@ -129,25 +143,44 @@ namespace AdonetORMFormUI
         {
             try
             {
+                if ((int)comboRemoveBook.SelectedValue <= 0)
+                {
+                    MessageBox.Show("Please select a book!", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    return;
+                }
+
+                Book myBook = booksORM.SelectET((int)comboRemoveBook.SelectedValue);
+
+
                 DialogResult response = MessageBox.Show($"Do you want to remove the book from list instead of deleting completely?","Confirm", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (response == DialogResult.Yes)
-                {   //IsPassive = 0;
-                    
+                {   //IsPassive = 1; This task will be performed with Update method
+                    myBook.IsPassive = true;
+                    switch (booksORM.Update(myBook))
+                    {
+                        case true:
+                            MessageBox.Show($"{myBook.BookName} has been successfully removed from the list (passive in database).");
+                            DeletePageCleanControls();
+                            break;
+                        case false:
+                            throw new Exception($"Unexpected error has occured during book {myBook.BookName} update");
+                            //No need to break since code will never reach there!
+                    }
                 }
                 else if (response ==  DialogResult.No)
                 {
-                    int bookID = (int)comboRemoveBook.SelectedValue;
-                    var loanList = LoanBookORM.Current.Select().Where(x => x.BookId == bookID).ToList();
+                    var loanList = LoanBookORM.Current.Select().Where(x => x.BookId == myBook.BookId).ToList();
                     if (loanList.Count > 0)
                     {
                         MessageBox.Show("ERROR: This book has been loaned. You are not allowed to remove!", "WARNING", MessageBoxButtons.OK,MessageBoxIcon.Stop);
                         return;
                     }   //loaned books can't be removed. If count is <= 0 code will keep continue and won't execute return.
 
-                    Book myBook = booksORM.SelectET(bookID);
                     if (booksORM.Delete(myBook))
                     {
                         MessageBox.Show($"Book '{myBook.BookName}' has been successfully deleteted.");
+                        DeletePageCleanControls();
+                        BringAllBooksToComboDelete();
                        
                     }
                     else
@@ -159,7 +192,112 @@ namespace AdonetORMFormUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Unexpected error has occured during book deletion!");
+                MessageBox.Show("Unexpected error has occured during book deletion!\n" + ex.Message);
+            }
+        }
+
+        private void DeletePageCleanControls()
+        {
+            comboRemoveBook.SelectedIndex = -1;
+            richTextBoxBook.Clear();
+        }
+
+        private void UpdatePageCleanControls()
+        {
+            textUpdateBookName.Text = string.Empty;
+            numericUpDownAddPages.Value = 0;
+            numericUpDownAddStock.Value = 0;
+            comboUpdateGenre.SelectedIndex = -1;
+            comboUpdateAuthor.SelectedIndex = -1;
+        }
+
+        private void comboBoxBookUpdate_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                UpdatePageCleanControls();
+                if (comboBoxBookUpdate.SelectedIndex >= 0)
+                {
+                    Book chosenBook = booksORM.SelectET((int)comboBoxBookUpdate.SelectedValue);
+                    textUpdateBookName.Text = chosenBook.BookName;
+                    numericUpDownAddPages.Value = chosenBook.Pages;
+                    numericUpDownAddStock.Value = chosenBook.Stock;
+                    comboUpdateAuthor.SelectedValue = chosenBook.AuthorId;
+                    if (chosenBook.GenreId == null)
+                    {
+                        //comboUpdateGenre.SelectedIndex = -1;
+                        //This statement is alternative but to make it more professional we can use following approach
+                        comboUpdateGenre.SelectedValue = DefaultControls.DefaultValue;
+
+                    }
+                    else
+                    {
+                        comboUpdateGenre.SelectedValue = chosenBook.GenreId;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("ERROR: " + ex.Message);
+            }
+        }
+
+        private void btnUpdateBook_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (comboBoxBookUpdate.SelectedIndex >= 0)
+                {
+                    if (numericUpDownPagesUpdate.Value <= 0)
+                    {
+                        throw new Exception("ERROR: Page number must be greater than zero!");
+                    }
+
+                    if (numericUpDownUpdateStoc.Value <= 0)
+                    {
+                        throw new Exception("ERROR: Stock must be greater than zero!");
+                    }
+                }
+
+                Book chosenBook = booksORM.SelectET((int)comboBoxBookUpdate.SelectedValue);
+                if (chosenBook == null)
+                {
+                    throw new Exception("ERROR: Book not found!");
+                    //or
+                    //MessageBox.Show("ERROR: Book not found!");
+                    //return;
+                }
+
+                chosenBook.BookName = textUpdateBookName.Text.Trim();
+                chosenBook.Pages = (int)numericUpDownPagesUpdate.Value;
+                chosenBook.Stock = (int)numericUpDownUpdateStoc.Value;
+                chosenBook.IsPassive = false;
+                chosenBook.AuthorId = (int)comboUpdateAuthor.SelectedValue;
+
+                if ((int)comboUpdateGenre.SelectedValue == -1)
+                {
+                    chosenBook.GenreId = null;
+                }
+                else
+                {
+                    chosenBook.GenreId = (int)comboUpdateGenre.SelectedValue;
+                }
+
+                switch (booksORM.Update(chosenBook))
+                {
+                    case true:
+                        MessageBox.Show($"Book {chosenBook.BookName} has been successfully updated");
+                        BringAllBooksToComboUpdate();
+                        break;
+
+                    case false:
+                        throw new Exception($"Unexpected error has occured during update of book {chosenBook.BookName}.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("ERROR " + ex.Message);
             }
         }
     }

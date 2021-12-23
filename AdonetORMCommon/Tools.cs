@@ -11,13 +11,16 @@ namespace AdonetORMCommon
 {
     public static class Tools
     {
+        public static string SqlConnectionStringSentence { get; set; } = "Server=DESKTOP-TUMHS1A; Database=SCHOOLLIBRARY; Trusted_Connection=True;";
+
         private static SqlConnection _mySqlDBConnection;
+
         public static SqlConnection MySqlDBConnection {
             get
             {
                 if (_mySqlDBConnection == null)
                 {
-                    _mySqlDBConnection = new SqlConnection("Server=DESKTOP-TUMHS1A; Database=SCHOOLLIBRARY; Trusted_Connection=True;");
+                    _mySqlDBConnection = new SqlConnection(SqlConnectionStringSentence);
                 }
                 return _mySqlDBConnection;
             }
@@ -27,6 +30,23 @@ namespace AdonetORMCommon
                 _mySqlDBConnection = value;
             }
         }
+
+        public static void OpenConnection()
+        {
+            try
+            {
+                if (MySqlDBConnection.State != ConnectionState.Open)
+                {
+                    MySqlDBConnection.ConnectionString = SqlConnectionStringSentence;
+                    MySqlDBConnection.Open();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public static List<ET> ToList<ET>(this DataTable dt) where ET : class, new()
         {
             Type type = typeof(ET);

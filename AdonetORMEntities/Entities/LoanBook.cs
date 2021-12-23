@@ -15,6 +15,6 @@ namespace AdonetORMEntities.Entities
         public int BookId { get; set; }
         public DateTime LoanStarts { get; set; }
         public DateTime LoanEnds { get; set; }
-        public bool IsReturnedool { get; set; }
+        public bool IsReturned { get; set; }
     }
 }
