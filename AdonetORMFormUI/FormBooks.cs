@@ -57,7 +57,7 @@ namespace AdonetORMFormUI
             #endregion FirstApproachReadOnlyComboBox
 
             #region SecondApproachReadOnlyComboBox
-            for (int i = 0; i < this.Controls[0].Controls.Count; i++)
+            //for (int i = 0; i < this.Controls[0].Controls.Count; i++)
             //{
             //    for (int k = 0; k < this.Controls[0].Controls[i].Controls.Count; k++)
             //    {
@@ -66,7 +66,7 @@ namespace AdonetORMFormUI
             //            ((ComboBox)this.Controls[0].Controls[i].Controls[k]).DropDownStyle = ComboBoxStyle.DropDownList;
             //        }
             //    }
-            //}     //Better performance
+            //}     //Better performance provided.
             #endregion SecondApproachReadOnlyComboBox
 
 
