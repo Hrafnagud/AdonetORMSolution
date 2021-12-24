@@ -34,6 +34,42 @@ namespace AdonetORMFormUI
             BringAllBooksToComboDelete();
             BringAllBooksToComboUpdate();
 
+            #region FirstApproachReadOnlyComboBox
+            foreach (var item in this.Controls)
+            {
+                if (item is TabControl)
+                {
+                    foreach (var subItem in ((TabControl)item).Controls)
+                    {
+                        if (subItem is TabPage)
+                        {
+                            foreach (var subItemOfSubItem in ((TabPage)subItem).Controls)
+                            {
+                                if (subItemOfSubItem is ComboBox)
+                                {
+                                    ((ComboBox)subItemOfSubItem).DropDownStyle = ComboBoxStyle.DropDownList;
+                                }
+                            }
+                        }
+                    }
+                }
+            }     //COMBO BOXES ARE READ ONLY NOW. BUT THIS METHOD USES THREE NESTED LOOPS. COMPLEXITY IS O(n^3). WHICH IS NOT EFFICIENT.
+            #endregion FirstApproachReadOnlyComboBox
+
+            #region SecondApproachReadOnlyComboBox
+            for (int i = 0; i < this.Controls[0].Controls.Count; i++)
+            //{
+            //    for (int k = 0; k < this.Controls[0].Controls[i].Controls.Count; k++)
+            //    {
+            //        if(this.Controls[0].Controls[i].Controls[k] is ComboBox)
+            //        {
+            //            ((ComboBox)this.Controls[0].Controls[i].Controls[k]).DropDownStyle = ComboBoxStyle.DropDownList;
+            //        }
+            //    }
+            //}     //Better performance
+            #endregion SecondApproachReadOnlyComboBox
+
+
         }
 
         private void BringAllBooksToComboUpdate()

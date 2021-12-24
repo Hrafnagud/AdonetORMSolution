@@ -139,7 +139,8 @@ namespace AdonetORMCommon
                     else if (item.PropertyType.Name.Contains("String"))
                     {
                         //'Crime and Punishment',
-                        values += $"'{item.GetValue(Entity)}',";
+                        values += $"'{item.GetValue(Entity).ToString().Replace("'","''")}',";   //BookName Samuel's Book would be erroneous because of sql conventions
+                        //replacing single quotation mark with escape single quotation mark.
                     }
                     else
                     {
@@ -223,7 +224,7 @@ namespace AdonetORMCommon
                 else if (item.PropertyType.Name.Contains("String") || item.PropertyType.Name.Contains("Char"))
                 {
                     //BookName = 'Crime and Punishment',
-                    sets += $"{item.Name} = '{item.GetValue(Entity)}',"; 
+                    sets += $"{item.Name} = '{item.GetValue(Entity).ToString().Replace("'","''")}',"; 
                 }
                 else
                 {
@@ -259,7 +260,7 @@ namespace AdonetORMCommon
                 Tools.OpenConnection();
                 affectedRows = command.ExecuteNonQuery();
             }
-
+            
             return affectedRows > 0 ? true : false;
         }
 
